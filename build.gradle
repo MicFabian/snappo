@@ -6,8 +6,8 @@ plugins {
   id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
 }
 
-group = 'de.xm'
-version = '1.3.0-SNAPSHOT'
+group = 'mfabian'
+version = '1.0'
 
 def groovyVersion = '5.0.4'
 

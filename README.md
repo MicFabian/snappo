@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-  testImplementation 'de.xm:snappo:1.3.0'
+  testImplementation 'mfabian:snappo:1.0'
   testImplementation 'org.spockframework:spock-core:2.4-groovy-5.0'
 }
 ```
@@ -32,7 +32,7 @@ repositories {
 }
 
 dependencies {
-  testImplementation 'de.xm:snappo:1.3.0-SNAPSHOT'
+  testImplementation 'mfabian:snappo:1.0-SNAPSHOT'
 }
 ```
 
@@ -40,8 +40,8 @@ dependencies {
 In your Spock spec:
 
 ```groovy
-import de.xm.snappo.Snappo
-import de.xm.snappo.Comparisons
+import mfabian.snappo.Snappo
+import mfabian.snappo.Comparisons
 
 class ApiSpec extends Specification {
   def 'response matches snapshot'() {
@@ -118,10 +118,10 @@ POM_SCM_URL=https://github.com/MicFabian/snappo
 4. Publish:
 
 ```bash
-# Snapshot version (e.g. 1.3.0-SNAPSHOT)
+# Snapshot version (e.g. 1.0-SNAPSHOT)
 ./gradlew publishToMavenCentral
 
-# Release version (e.g. 1.3.0)
+# Release version (e.g. 1.0)
 ./gradlew publishToMavenCentral
 ```
 
