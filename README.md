@@ -104,15 +104,15 @@ signingPassword=YOUR_KEY_PASSPHRASE
 # POM metadata (replace placeholders)
 POM_NAME=snappo
 POM_DESCRIPTION=Spock snapshot testing helpers for Groovy/Java projects
-POM_URL=https://github.com/your-org/snappo
+POM_URL=https://github.com/MicFabian/snappo
 POM_LICENSE_NAME=The Apache License, Version 2.0
 POM_LICENSE_URL=https://www.apache.org/licenses/LICENSE-2.0.txt
 POM_DEVELOPER_ID=your-id
 POM_DEVELOPER_NAME=Your Name
 POM_DEVELOPER_EMAIL=you@example.com
-POM_SCM_CONNECTION=scm:git:https://github.com/your-org/snappo.git
-POM_SCM_DEV_CONNECTION=scm:git:ssh://git@github.com:your-org/snappo.git
-POM_SCM_URL=https://github.com/your-org/snappo
+POM_SCM_CONNECTION=scm:git:https://github.com/MicFabian/snappo.git
+POM_SCM_DEV_CONNECTION=scm:git:ssh://git@github.com:MicFabian/snappo.git
+POM_SCM_URL=https://github.com/MicFabian/snappo
 ```
 
 4. Publish:

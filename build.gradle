@@ -61,7 +61,7 @@ publishing {
       pom {
         name = prop('POM_NAME', 'snappo')
         description = prop('POM_DESCRIPTION', 'Spock snapshot testing helpers for Groovy/Java projects')
-        url = prop('POM_URL', 'https://github.com/your-org/snappo')
+        url = prop('POM_URL', 'https://github.com/MicFabian/snappo')
 
         licenses {
           license {
@@ -80,9 +80,9 @@ publishing {
         }
 
         scm {
-          connection = prop('POM_SCM_CONNECTION', 'scm:git:https://github.com/your-org/snappo.git')
-          developerConnection = prop('POM_SCM_DEV_CONNECTION', 'scm:git:ssh://git@github.com:your-org/snappo.git')
-          url = prop('POM_SCM_URL', 'https://github.com/your-org/snappo')
+          connection = prop('POM_SCM_CONNECTION', 'scm:git:https://github.com/MicFabian/snappo.git')
+          developerConnection = prop('POM_SCM_DEV_CONNECTION', 'scm:git:ssh://git@github.com:MicFabian/snappo.git')
+          url = prop('POM_SCM_URL', 'https://github.com/MicFabian/snappo')
         }
       }
     }
