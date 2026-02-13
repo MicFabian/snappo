@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-  testImplementation 'mfabian:snappo:1.0'
+  testImplementation 'io.github.micfabian:snappo:1.0'
   testImplementation 'org.spockframework:spock-core:2.4-groovy-5.0'
 }
 ```
@@ -32,7 +32,7 @@ repositories {
 }
 
 dependencies {
-  testImplementation 'mfabian:snappo:1.0-SNAPSHOT'
+  testImplementation 'io.github.micfabian:snappo:1.0-SNAPSHOT'
 }
 ```
 
@@ -40,8 +40,8 @@ dependencies {
 In your Spock spec:
 
 ```groovy
-import mfabian.snappo.Snappo
-import mfabian.snappo.Comparisons
+import io.github.micfabian.snappo.Snappo
+import io.github.micfabian.snappo.Comparisons
 
 class ApiSpec extends Specification {
   def 'response matches snapshot'() {
