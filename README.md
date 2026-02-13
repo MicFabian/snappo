@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-  testImplementation 'io.github.micfabian:snappo:1.0'
+  testImplementation 'io.github.micfabian:snappo:1.0.1'
   testImplementation 'org.spockframework:spock-core:2.4-groovy-5.0'
 }
 ```
@@ -32,7 +32,7 @@ repositories {
 }
 
 dependencies {
-  testImplementation 'io.github.micfabian:snappo:1.0-SNAPSHOT'
+  testImplementation 'io.github.micfabian:snappo:1.0.1-SNAPSHOT'
 }
 ```
 
@@ -118,10 +118,10 @@ POM_SCM_URL=https://github.com/MicFabian/snappo
 4. Publish:
 
 ```bash
-# Snapshot version (e.g. 1.0-SNAPSHOT)
+# Snapshot version (e.g. 1.0.1-SNAPSHOT)
 ./gradlew publishToMavenCentral
 
-# Release version (e.g. 1.0)
+# Release version (e.g. 1.0.1)
 ./gradlew publishToMavenCentral
 ```
 
@@ -162,5 +162,5 @@ Snappo.expect(data, Comparisons.detect(data))
 
 ## Notes
 - The global Spock extension is registered via `META-INF/services` and runs automatically.
-- If a snapshot is missing and you are in CI (detected via common CI env vars), a `FileNotFoundException` is thrown.
+- Missing snapshots are created automatically on first run.
 - This library targets Groovy 5 + Spock 2.4. If you need different versions, update the versions in `build.gradle`.

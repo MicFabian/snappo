@@ -1,6 +1,5 @@
 package io.github.micfabian.snappo
 
-import io.github.micfabian.snappo.environment.ContinousIntegration
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -45,8 +44,15 @@ class FileSnapshots {
 
   static void assertSnapshot(Object actual, Comparison comparison) {
     Path resource = detectResource(comparison)
-    Object expected = readResource(resource, comparison)
     Object current = current(actual, comparison)
+
+    File file = resource.toFile()
+    Object expected
+    if (!file.exists() || file.length() == 0) {
+      expected = upsertResource(actual, resource, comparison)
+    } else {
+      expected = readResource(resource, comparison)
+    }
 
     if (expected == current) {
       return
@@ -175,9 +181,6 @@ class FileSnapshots {
     }
 
     if (!file.exists() || file.length() == 0) {
-      if (ContinousIntegration.isCi()) {
-        throw new FileNotFoundException(file.path)
-      }
       LOG.debug('Creating {}', file.path)
       file.parentFile?.mkdirs()
       file.createNewFile()

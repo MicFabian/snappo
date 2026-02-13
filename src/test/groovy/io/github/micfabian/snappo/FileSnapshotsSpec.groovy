@@ -35,6 +35,20 @@ class FileSnapshotsSpec extends Specification {
     noExceptionThrown()
   }
 
+  def 'assertSnapshot creates missing snapshot when not updating'() {
+    given:
+    currentFeatureName = 'assertSnapshot creates missing snapshot when not updating'
+    Path file = FileSnapshots.packageDir().resolve('assertsnapshot-creates-missing-snapshot-when-not-updating.txt')
+    Files.deleteIfExists(file)
+
+    when:
+    FileSnapshots.assertSnapshot('created', Comparisons.TXT)
+
+    then:
+    Files.exists(file)
+    new String(Files.readAllBytes(file), StandardCharsets.UTF_8) == 'created'
+  }
+
   def 'updateSnapshot overwrites existing snapshot'() {
     given:
     currentFeatureName = 'update snapshot overwrites existing snapshot'
@@ -47,6 +61,36 @@ class FileSnapshotsSpec extends Specification {
 
     then:
     new String(Files.readAllBytes(file), StandardCharsets.UTF_8) == 'new'
+  }
+
+  def 'assertSnapshot in update mode overwrites existing snapshot'() {
+    given:
+    currentFeatureName = 'assertSnapshot in update mode overwrites existing snapshot'
+    Path file = FileSnapshots.packageDir().resolve('assertsnapshot-in-update-mode-overwrites-existing-snapshot.txt')
+    Files.createDirectories(file.parent)
+    Files.write(file, 'old'.getBytes(StandardCharsets.UTF_8))
+
+    when:
+    FileSnapshots.withUpdate(true) {
+      FileSnapshots.assertSnapshot('new', Comparisons.TXT)
+    }
+
+    then:
+    new String(Files.readAllBytes(file), StandardCharsets.UTF_8) == 'new'
+  }
+
+  def 'assertSnapshot fails on mismatch when not updating'() {
+    given:
+    currentFeatureName = 'assertSnapshot fails on mismatch when not updating'
+    Path file = FileSnapshots.packageDir().resolve('assertsnapshot-fails-on-mismatch-when-not-updating.txt')
+    Files.createDirectories(file.parent)
+    Files.write(file, 'expected'.getBytes(StandardCharsets.UTF_8))
+
+    when:
+    FileSnapshots.assertSnapshot('actual', Comparisons.TXT)
+
+    then:
+    thrown(AssertionError)
   }
 
   def 'assertSnapshotNamed uses explicit name'() {

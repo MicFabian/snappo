@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'io.github.micfabian'
-version = '1.0'
+version = '1.0.1'
 
 def groovyVersion = '5.0.4'
 
@@ -73,9 +73,9 @@ publishing {
 
         developers {
           developer {
-            id = prop('POM_DEVELOPER_ID', 'your-id')
-            name = prop('POM_DEVELOPER_NAME', 'Your Name')
-            email = prop('POM_DEVELOPER_EMAIL', 'you@example.com')
+            id = prop('POM_DEVELOPER_ID', 'micfabian')
+            name = prop('POM_DEVELOPER_NAME', 'Michael Fabian')
+            email = prop('POM_DEVELOPER_EMAIL', 'mvirks@web.de')
           }
         }
 
@@ -95,7 +95,11 @@ signing {
   def signingKeyId = findProperty('signingKeyId')?.toString()
   def signingPassword = findProperty('signingPassword')?.toString()
   if (signingKey) {
-    useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+    // Gradle properties often store armored keys with literal "\n".
+    def normalizedSigningKey = signingKey.replace('\\n', '\n')
+    useInMemoryPgpKeys(signingKeyId, normalizedSigningKey, signingPassword)
+  } else {
+    useGpgCmd()
   }
   sign publishing.publications
 }
