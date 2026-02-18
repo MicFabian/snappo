@@ -19,7 +19,9 @@ class FileSnapshots {
   static Path snapshotsRoot = Paths.get(System.getProperty('spock.snapshot.dir', 'src/test/resources/snapshots'))
 
   static Closure<String> packageNameProvider = { FeatureNameExtension.packageName ?: '' }
-  static Closure<String> classNameProvider = { FeatureNameExtension.className ?: '' }
+  static Closure<String> classNameProvider = {
+    FeatureNameExtension.className ?: inferClassNameFromStack()
+  }
   static Closure<String> featureName = { FeatureNameExtension.featureName ?: '' }
   static Closure<Boolean> updating = {
     def env = System.getenv('SNAPPO_UPDATE') ?: System.getenv('SPOCK_UPDATE')
@@ -250,5 +252,15 @@ class FileSnapshots {
     String lower = name.toLowerCase(Locale.ENGLISH)
     String cleaned = lower.replaceAll(/[^a-z0-9]+/, '-')
     cleaned.replaceAll(/^-+|-+$/, '')
+  }
+
+  private static String inferClassNameFromStack() {
+    def stack = Thread.currentThread().getStackTrace()
+    for (def element : stack) {
+      if (element.className?.endsWith('Spec') || element.className?.endsWith('Test')) {
+        return element.className.tokenize('.').last()
+      }
+    }
+    return 'UnknownSpec'
   }
 }

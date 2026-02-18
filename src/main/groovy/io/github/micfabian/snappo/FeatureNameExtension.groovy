@@ -65,7 +65,7 @@ class FeatureNameExtension implements IGlobalExtension {
         LOG.debug('Unable to resolve spec class for snapshot naming')
       } else {
         packageNameContext.set(specClass.package?.name ?: '')
-        classNameContext.set(specClass.simpleName)
+        classNameContext.set(specClass.getSimpleName())
       }
       invocation.proceed()
     }

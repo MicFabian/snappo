@@ -39,5 +39,7 @@ class FileSnapshotsNamingSpec extends Specification {
     Path dir = FileSnapshots.packageDir()
     Files.exists(dir.resolve('user-list-v2.txt'))
     Files.exists(dir.resolve('user-list-v2-1.txt'))
+
+    Files.exists(tempDir.resolve('com/acme/snap/fancy-spec/user-list-v2.txt'))
   }
 }
