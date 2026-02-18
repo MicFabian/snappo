@@ -120,4 +120,9 @@ class FileSnapshotsSpec extends Specification {
     inside
     !FileSnapshots.isUpdating()
   }
+
+  def "should infer test class name"() {
+    expect:
+      FileSnapshots.inferClassNameFromStack() == "FileSnapshotsSpec"
+  }
 }
