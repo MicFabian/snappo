@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-  testImplementation 'io.github.micfabian:snappo:1.0.1'
+  testImplementation 'io.github.micfabian:snappo:1.0.2'
   testImplementation 'org.spockframework:spock-core:2.4-groovy-5.0'
 }
 ```
@@ -32,7 +32,7 @@ repositories {
 }
 
 dependencies {
-  testImplementation 'io.github.micfabian:snappo:1.0.1-SNAPSHOT'
+  testImplementation 'io.github.micfabian:snappo:1.0.2-SNAPSHOT'
 }
 ```
 
@@ -118,10 +118,10 @@ POM_SCM_URL=https://github.com/MicFabian/snappo
 4. Publish:
 
 ```bash
-# Snapshot version (e.g. 1.0.1-SNAPSHOT)
+# Snapshot version (e.g. 1.0.2-SNAPSHOT)
 ./gradlew publishToMavenCentral
 
-# Release version (e.g. 1.0.1)
+# Release version (e.g. 1.0.2)
 ./gradlew publishToMavenCentral
 ```
 

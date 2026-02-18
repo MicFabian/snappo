@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'io.github.micfabian'
-version = '1.0.1'
+version = '1.0.2'
 
 def groovyVersion = '5.0.4'
 
