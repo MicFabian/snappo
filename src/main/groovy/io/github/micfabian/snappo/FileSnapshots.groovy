@@ -1,5 +1,6 @@
 package io.github.micfabian.snappo
 
+import org.opentest4j.AssertionFailedError
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -65,7 +66,7 @@ class FileSnapshots {
     }
 
     if (expected != current) {
-      throw new AssertionError("Snapshot mismatch for ${resource}\nExpected: ${expected}\nActual: ${current}")
+      throw new AssertionFailedError("Snapshot mismatch for ${resource}", expected?.toString(), current?.toString())
     }
   }
 
