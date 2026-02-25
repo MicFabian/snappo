@@ -93,12 +93,14 @@ publishing {
 signing {
   required { isReleaseVersion }
   def signingKey = findProperty('signingKey')?.toString()
-  def signingKeyId = findProperty('signingKeyId')?.toString()
   def signingPassword = findProperty('signingPassword')?.toString()
   if (signingKey) {
-    // Gradle properties often store armored keys with literal "\n".
-    def normalizedSigningKey = signingKey.replace('\\n', '\n')
-    useInMemoryPgpKeys(signingKeyId, normalizedSigningKey, signingPassword)
+    // Accept either multiline armored keys or one-line values with literal "\n".
+    def normalizedSigningKey = signingKey
+      .replace('\r', '')
+      .replace('\\n', '\n')
+      .trim()
+    useInMemoryPgpKeys(normalizedSigningKey, signingPassword)
   } else {
     useGpgCmd()
   }

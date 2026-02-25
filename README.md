@@ -141,9 +141,9 @@ Release versions are uploaded, staged, and released automatically through Sonaty
 Required repository secrets for release workflow:
 - `SONATYPE_USERNAME`
 - `SONATYPE_PASSWORD`
-- `SIGNING_KEY_ID`
 - `SIGNING_KEY`
 - `SIGNING_PASSWORD`
+`SIGNING_KEY_ID` is optional.
 
 ### Snapshot folder
 By default snapshots are written to:
