@@ -6,7 +6,8 @@ A snapshot testing helper for Spock specs, updated for Groovy 5 + the latest Spo
 - Global Spock extension captures spec/class/feature names automatically.
 - Snapshots are stored in `src/test/resources/snapshots/<package>/<class-kebab>/`.
 - Update mode via `SNAPPO_UPDATE=true` or `-Dsnappo.snapshot.update=true` (also supports the legacy `SPOCK_UPDATE` and `-Dspock.snapshot.update`).
-- A tiny facade (`Snappo`) with `expect`, `snapshot`, `updateSnapshot`, and `withUpdate` helpers.
+- `Snappo` is the primary API (`expect`, `snapshot`, `updateSnapshot`, `withUpdate`).
+- `FileSnapshots` is kept as a deprecated compatibility alias for older tests.
 - JSON/XML/TXT/PNG/BINARY/array comparisons with JSON helpers for exclusions.
 
 ## Install (Gradle)
@@ -86,6 +87,9 @@ Snappo.withUpdate {
 Snappo.snapshotNamed('users list', result, Comparisons.JSON)
 ```
 
+### API naming
+Use `Snappo` in new code. `FileSnapshots` remains available for backward compatibility only.
+
 ## Publish To Maven Central
 1. Create a namespace and user token in Sonatype Central Portal.
 2. Generate an ASCII-armored OpenPGP keypair and publish the public key.
@@ -122,10 +126,24 @@ POM_SCM_URL=https://github.com/MicFabian/snappo
 ./gradlew publishToMavenCentral
 
 # Release version (e.g. 1.0.4)
-./gradlew publishToMavenCentral
+./gradlew publishToMavenCentral -PreleaseVersion=1.0.4
 ```
 
 Release versions are uploaded, staged, and released automatically through Sonatype (`publishToSonatype` + `closeAndReleaseSonatypeStagingRepository`).
+
+## GitHub Actions (CI + Release)
+- `.github/workflows/ci.yml` runs `./gradlew test` on every push to `main` and pull request.
+- `.github/workflows/release.yml` runs on `v*` tags (for example `v1.0.5`) or manual dispatch with a version input, then:
+  - validates the release version
+  - runs tests
+  - publishes with `./gradlew publishToMavenCentral -PreleaseVersion=<version>`
+
+Required repository secrets for release workflow:
+- `SONATYPE_USERNAME`
+- `SONATYPE_PASSWORD`
+- `SIGNING_KEY_ID`
+- `SIGNING_KEY`
+- `SIGNING_PASSWORD`
 
 ### Snapshot folder
 By default snapshots are written to:

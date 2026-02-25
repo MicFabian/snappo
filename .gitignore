@@ -4,6 +4,7 @@ build/
 
 # Java / Groovy
 out/
+bin/
 *.class
 *.log
 hs_err_pid*

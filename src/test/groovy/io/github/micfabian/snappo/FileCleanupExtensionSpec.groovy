@@ -11,14 +11,14 @@ class FileCleanupExtensionSpec extends Specification {
   @TempDir Path tempDir
 
   def setup() {
-    FileSnapshots.snapshotsRoot = tempDir
-    FileSnapshots.packageNameProvider = { 'com.example' }
-    FileSnapshots.classNameProvider = { 'FileCleanupExtensionSpec' }
+    Snappo.snapshotsRoot = tempDir
+    Snappo.packageNameProvider = { 'com.example' }
+    Snappo.classNameProvider = { 'FileCleanupExtensionSpec' }
   }
 
   def 'cleanup deletes files not referenced when updating'() {
     given:
-    Path dir = FileSnapshots.packageDir()
+    Path dir = Snappo.packageDir()
     Files.createDirectories(dir)
     Path keep = dir.resolve('keep.txt')
     Path remove = dir.resolve('remove.txt')
@@ -36,7 +36,7 @@ class FileCleanupExtensionSpec extends Specification {
 
   def 'cleanup does nothing when not updating'() {
     given:
-    Path dir = FileSnapshots.packageDir()
+    Path dir = Snappo.packageDir()
     Files.createDirectories(dir)
     Path keep = dir.resolve('keep.txt')
     Path remove = dir.resolve('remove.txt')

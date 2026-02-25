@@ -41,8 +41,8 @@ class FileCleanupExtension implements IGlobalExtension {
     @Override
     void intercept(IMethodInvocation invocation) throws Throwable {
       List<String> specs = classSpecifications.get() ?: []
-      Path packageDir = FileSnapshots.packageDir()
-      boolean update = FileSnapshots.isUpdating()
+      Path packageDir = Snappo.packageDir()
+      boolean update = Snappo.isUpdating()
       cleanupFiles(specs, packageDir, update)
       classSpecifications.remove()
     }

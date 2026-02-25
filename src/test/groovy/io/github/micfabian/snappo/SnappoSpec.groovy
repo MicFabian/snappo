@@ -13,10 +13,10 @@ class SnappoSpec extends Specification {
   private String currentFeatureName
 
   def setup() {
-    FileSnapshots.snapshotsRoot = tempDir
-    FileSnapshots.packageNameProvider = { 'com.example' }
-    FileSnapshots.classNameProvider = { 'SnappoSpec' }
-    FileSnapshots.featureName = { currentFeatureName ?: '' }
+    Snappo.snapshotsRoot = tempDir
+    Snappo.packageNameProvider = { 'com.example' }
+    Snappo.classNameProvider = { 'SnappoSpec' }
+    Snappo.featureName = { currentFeatureName ?: '' }
     System.clearProperty('snappo.snapshot.update')
     System.clearProperty('spock.snapshot.update')
   }
@@ -24,7 +24,7 @@ class SnappoSpec extends Specification {
   def 'snappo expect reads snapshot'() {
     given:
     currentFeatureName = 'snappo expect reads snapshot'
-    Path file = FileSnapshots.packageDir().resolve('snappo-expect-reads-snapshot.txt')
+    Path file = Snappo.packageDir().resolve('snappo-expect-reads-snapshot.txt')
     Files.createDirectories(file.parent)
     Files.write(file, 'ok'.getBytes(StandardCharsets.UTF_8))
 
@@ -43,7 +43,7 @@ class SnappoSpec extends Specification {
     Snappo.updateSnapshot('fresh', Comparisons.TXT)
 
     then:
-    Path file = FileSnapshots.packageDir().resolve('snappo-updatesnapshot-writes-file.txt')
+    Path file = Snappo.packageDir().resolve('snappo-updatesnapshot-writes-file.txt')
     new String(Files.readAllBytes(file), StandardCharsets.UTF_8) == 'fresh'
   }
 
@@ -54,7 +54,7 @@ class SnappoSpec extends Specification {
     }
 
     then:
-    Path file = FileSnapshots.packageDir().resolve('named-snapshot.txt')
+    Path file = Snappo.packageDir().resolve('named-snapshot.txt')
     Files.exists(file)
   }
 }

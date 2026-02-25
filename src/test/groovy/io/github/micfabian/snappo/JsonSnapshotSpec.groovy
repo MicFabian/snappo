@@ -15,10 +15,10 @@ class JsonSnapshotSpec extends Specification {
   private String currentFeatureName
 
   def setup() {
-    FileSnapshots.snapshotsRoot = tempDir
-    FileSnapshots.packageNameProvider = { 'com.example' }
-    FileSnapshots.classNameProvider = { 'JsonSnapshotSpec' }
-    FileSnapshots.featureName = { currentFeatureName ?: '' }
+    Snappo.snapshotsRoot = tempDir
+    Snappo.packageNameProvider = { 'com.example' }
+    Snappo.classNameProvider = { 'JsonSnapshotSpec' }
+    Snappo.featureName = { currentFeatureName ?: '' }
     System.clearProperty('snappo.snapshot.update')
     System.clearProperty('spock.snapshot.update')
   }
@@ -30,7 +30,7 @@ class JsonSnapshotSpec extends Specification {
     def comparison = new JsonComparison(excludedProperties: ['id'] as String[])
 
     when:
-    FileSnapshots.assertSnapshot([id: '2', name: 'Alice'], comparison)
+    Snappo.assertSnapshot([id: '2', name: 'Alice'], comparison)
 
     then:
     noExceptionThrown()
@@ -42,7 +42,7 @@ class JsonSnapshotSpec extends Specification {
     writeSnapshot('{"id":"1","name":"Alice"}')
 
     when:
-    FileSnapshots.assertSnapshot([id: '1', name: 'Bob'], Comparisons.JSON)
+    Snappo.assertSnapshot([id: '1', name: 'Bob'], Comparisons.JSON)
 
     then:
     thrown(AssertionError)
@@ -55,7 +55,7 @@ class JsonSnapshotSpec extends Specification {
     def comparison = new JsonComparison(excludedTypes: [Instant] as Class[])
 
     when:
-    FileSnapshots.assertSnapshot([name: 'Alice', createdAt: Instant.parse('2026-01-01T00:00:00Z')], comparison)
+    Snappo.assertSnapshot([name: 'Alice', createdAt: Instant.parse('2026-01-01T00:00:00Z')], comparison)
 
     then:
     noExceptionThrown()
@@ -87,7 +87,7 @@ class JsonSnapshotSpec extends Specification {
       '''.stripIndent())
 
     when:
-    FileSnapshots.assertSnapshot('''
+    Snappo.assertSnapshot('''
       {
         "id": "order-2002",
         "createdAt": "2026-02-10T08:00:00Z",
@@ -114,7 +114,7 @@ class JsonSnapshotSpec extends Specification {
   }
 
   private void writeSnapshot(String json) {
-    Path file = FileSnapshots.packageDir().resolve("${sanitize(currentFeatureName)}.json")
+    Path file = Snappo.packageDir().resolve("${sanitize(currentFeatureName)}.json")
     Files.createDirectories(file.parent)
     Files.write(file, json.getBytes(StandardCharsets.UTF_8))
   }
