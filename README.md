@@ -219,35 +219,6 @@ Primary API is `Snappo`:
 
 `FileSnapshots` still exists as a deprecated compatibility alias for older code.
 
-## Publish To Maven Central (Maintainers)
-
-### Local publish prerequisites
-- Sonatype Central Portal token
-- OpenPGP keypair
-- Public key uploaded to at least one public key server supported by Sonatype
-- Gradle properties for Sonatype + signing credentials
-
-Example `~/.gradle/gradle.properties`:
-
-```properties
-sonatypeUsername=YOUR_CENTRAL_USERNAME
-sonatypePassword=YOUR_CENTRAL_PASSWORD
-signingKey=-----BEGIN PGP PRIVATE KEY BLOCK-----\n...\n-----END PGP PRIVATE KEY BLOCK-----
-signingPassword=YOUR_KEY_PASSPHRASE
-
-POM_NAME=snappo
-POM_DESCRIPTION=Spock snapshot testing helpers for Groovy/Java projects
-POM_URL=https://github.com/MicFabian/snappo
-POM_LICENSE_NAME=The Apache License, Version 2.0
-POM_LICENSE_URL=https://www.apache.org/licenses/LICENSE-2.0.txt
-POM_DEVELOPER_ID=micfabian
-POM_DEVELOPER_NAME=Michael Fabian
-POM_DEVELOPER_EMAIL=mvirks@web.de
-POM_SCM_CONNECTION=scm:git:https://github.com/MicFabian/snappo.git
-POM_SCM_DEV_CONNECTION=scm:git:ssh://git@github.com:MicFabian/snappo.git
-POM_SCM_URL=https://github.com/MicFabian/snappo
-```
-
 Publish release:
 
 ```bash
