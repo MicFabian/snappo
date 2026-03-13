@@ -1,6 +1,10 @@
 package io.github.micfabian.snappo
 
+import groovy.xml.XmlUtil
+import groovy.xml.slurpersupport.GPathResult
+
 import java.lang.reflect.Array
+import java.lang.reflect.Modifier
 
 class SnapshotDiff {
   private static final int MAX_DIFFERENCES = Integer.getInteger('snappo.diff.max', 25)
@@ -44,6 +48,11 @@ class SnapshotDiff {
       return
     }
 
+    if (expected instanceof CharSequence && actual instanceof CharSequence) {
+      compareText(path, expected.toString(), actual.toString(), differences, truncated)
+      return
+    }
+
     if (expected instanceof Map && actual instanceof Map) {
       compareMaps(path, expected as Map, actual as Map, differences, truncated)
       return
@@ -64,6 +73,47 @@ class SnapshotDiff {
     }
 
     addDifference(differences, truncated, "${path} expected ${formatValue(expected)}, but was ${formatValue(actual)}")
+  }
+
+  private static void compareText(String path, String expected, String actual, List<String> differences, boolean[] truncated) {
+    String normalizedExpected = expected.replace('\r\n', '\n')
+    String normalizedActual = actual.replace('\r\n', '\n')
+    if (normalizedExpected == normalizedActual) {
+      return
+    }
+
+    if (!normalizedExpected.contains('\n') && !normalizedActual.contains('\n')) {
+      addDifference(differences, truncated, "${path} expected ${formatValue(normalizedExpected)}, but was ${formatValue(normalizedActual)}")
+      return
+    }
+
+    String[] expectedLines = normalizedExpected.split('\n', -1)
+    String[] actualLines = normalizedActual.split('\n', -1)
+
+    if (expectedLines.length != actualLines.length) {
+      addDifference(differences, truncated, "${path} line count mismatch: expected ${expectedLines.length}, but was ${actualLines.length}")
+    }
+
+    int maxLine = Math.min(expectedLines.length, actualLines.length)
+    for (int index = 0; index < maxLine; index++) {
+      if (differences.size() >= MAX_DIFFERENCES) {
+        truncated[0] = true
+        return
+      }
+
+      String expectedLine = expectedLines[index]
+      String actualLine = actualLines[index]
+      if (expectedLine == actualLine) {
+        continue
+      }
+
+      int charIndex = firstDifference(expectedLine, actualLine)
+      addDifference(
+        differences,
+        truncated,
+        "${path} line ${index + 1} expected ${formatValue(expectedLine)}, but was ${formatValue(actualLine)} (first difference at char ${charIndex + 1})"
+      )
+    }
   }
 
   private static void compareMaps(String path, Map expected, Map actual, List<String> differences, boolean[] truncated) {
@@ -125,6 +175,9 @@ class SnapshotDiff {
     if (value == null) {
       return null
     }
+    if (value instanceof GPathResult) {
+      return XmlUtil.serialize(value).trim()
+    }
     if (value instanceof Map) {
       Map normalized = [:]
       (value as Map).each { Object key, Object item ->
@@ -143,7 +196,31 @@ class SnapshotDiff {
       }
       return normalized
     }
+    if (shouldNormalizeObjectFields(value)) {
+      return normalizeObjectFields(value)
+    }
     value
+  }
+
+  private static Map normalizeObjectFields(Object value) {
+    Map normalized = [:]
+    Class currentClass = value.getClass()
+    while (currentClass != null && currentClass != Object.class) {
+      currentClass.declaredFields.each { field ->
+        if (Modifier.isStatic(field.modifiers) || field.synthetic) {
+          return
+        }
+        if (field.name == 'metaClass' || field.name.startsWith('$') || field.name.startsWith('this$')) {
+          return
+        }
+        if (!normalized.containsKey(field.name)) {
+          field.setAccessible(true)
+          normalized[field.name] = normalize(field.get(value))
+        }
+      }
+      currentClass = currentClass.superclass
+    }
+    normalized
   }
 
   private static String pathForKey(String path, Object key) {
@@ -176,6 +253,31 @@ class SnapshotDiff {
 
   private static String typeName(Object value) {
     value == null ? 'null' : value.getClass().simpleName
+  }
+
+  private static int firstDifference(String left, String right) {
+    int max = Math.min(left.length(), right.length())
+    for (int index = 0; index < max; index++) {
+      if (left.charAt(index) != right.charAt(index)) {
+        return index
+      }
+    }
+    max
+  }
+
+  private static boolean shouldNormalizeObjectFields(Object value) {
+    Class type = value.getClass()
+    if (type.isPrimitive()) {
+      return false
+    }
+    if (value instanceof CharSequence || value instanceof Number || value instanceof Boolean || value instanceof Character || value instanceof Enum) {
+      return false
+    }
+    String name = type.name
+    if (name.startsWith('java.') || name.startsWith('javax.') || name.startsWith('sun.') || name.startsWith('groovy.')) {
+      return false
+    }
+    true
   }
 
   private static boolean equalNumbers(Number expected, Number actual) {

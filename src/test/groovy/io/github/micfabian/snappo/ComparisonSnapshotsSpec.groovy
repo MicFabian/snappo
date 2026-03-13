@@ -7,6 +7,7 @@ import io.github.micfabian.snappo.comparison.JsonComparison
 import io.github.micfabian.snappo.comparison.PngComparison
 import io.github.micfabian.snappo.comparison.TextComparison
 import io.github.micfabian.snappo.comparison.XmlComparison
+import org.opentest4j.AssertionFailedError
 import spock.lang.Specification
 import spock.lang.TempDir
 
@@ -41,6 +42,20 @@ class ComparisonSnapshotsSpec extends Specification {
     noExceptionThrown()
   }
 
+  def 'text comparison mismatch message shows line difference'() {
+    given:
+    def comparison = new TextComparison(ignoreWhitespace: false)
+    writeSnapshot('text comparison mismatch message shows line difference', comparison, 'hello\nworld')
+
+    when:
+    Snappo.assertSnapshot('hello\nthere', comparison)
+
+    then:
+    def error = thrown(AssertionFailedError)
+    error.message.contains('Differences')
+    error.message.contains("\$ line 2 expected 'world', but was 'there'")
+  }
+
   def 'html comparison preserves whitespace'() {
     given:
     def comparison = new HtmlComparison()
@@ -63,6 +78,21 @@ class ComparisonSnapshotsSpec extends Specification {
 
     then:
     noExceptionThrown()
+  }
+
+  def 'xml comparison mismatch message shows changed xml node text'() {
+    given:
+    def comparison = new XmlComparison()
+    writeSnapshot('xml comparison mismatch message shows changed xml node text', comparison, '<root><id>1</id></root>')
+
+    when:
+    Snappo.assertSnapshot('<root><id>2</id></root>', comparison)
+
+    then:
+    def error = thrown(AssertionFailedError)
+    error.message.contains('Differences')
+    error.message.contains('<id>1</id>')
+    error.message.contains('<id>2</id>')
   }
 
   def 'json comparison excludes properties in real snapshot'() {
@@ -89,6 +119,20 @@ class ComparisonSnapshotsSpec extends Specification {
     noExceptionThrown()
   }
 
+  def 'array comparison mismatch message shows changed row value'() {
+    given:
+    def comparison = new ArrayComparison(rounding: 2)
+    writeSnapshot('array comparison mismatch message shows changed row value', comparison, [[1, 2], [3, 4]])
+
+    when:
+    Snappo.assertSnapshot([[1, 2], [9, 4]], comparison)
+
+    then:
+    def error = thrown(AssertionFailedError)
+    error.message.contains('Differences')
+    error.message.contains("\$ line 2 expected '3,4', but was '9,4'")
+  }
+
   def 'binary comparison matches snapshot'() {
     given:
     def comparison = new BinaryComparison('bin')
@@ -102,6 +146,20 @@ class ComparisonSnapshotsSpec extends Specification {
     noExceptionThrown()
   }
 
+  def 'binary comparison mismatch message shows byte index'() {
+    given:
+    def comparison = new BinaryComparison('bin')
+    writeSnapshot('binary comparison mismatch message shows byte index', comparison, [0x01, 0x02, 0x03] as byte[])
+
+    when:
+    Snappo.assertSnapshot([0x01, 0x09, 0x03] as byte[], comparison)
+
+    then:
+    def error = thrown(AssertionFailedError)
+    error.message.contains('Differences')
+    error.message.contains('$[1] expected 2, but was 9')
+  }
+
   def 'png comparison matches snapshot in size mode'() {
     given:
     def comparison = new PngComparison(PngComparison.MODE.SIZE)
@@ -113,6 +171,20 @@ class ComparisonSnapshotsSpec extends Specification {
 
     then:
     noExceptionThrown()
+  }
+
+  def 'png size mismatch message shows dimension field difference'() {
+    given:
+    def comparison = new PngComparison(PngComparison.MODE.SIZE)
+    writeSnapshot('png size mismatch message shows dimension field difference', comparison, createPng(3, 4))
+
+    when:
+    Snappo.assertSnapshot(createPng(5, 4), comparison)
+
+    then:
+    def error = thrown(AssertionFailedError)
+    error.message.contains('Differences')
+    error.message.contains('$.width expected 3, but was 5')
   }
 
   private void writeSnapshot(String featureName, def comparison, Object value) {
