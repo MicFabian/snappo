@@ -1,6 +1,7 @@
 package io.github.micfabian.snappo
 
 import io.github.micfabian.snappo.comparison.JsonComparison
+import org.opentest4j.AssertionFailedError
 import spock.lang.Specification
 import spock.lang.TempDir
 
@@ -46,6 +47,38 @@ class JsonSnapshotSpec extends Specification {
 
     then:
     thrown(AssertionError)
+  }
+
+  def 'json snapshot failure message contains path-based differences'() {
+    given:
+    currentFeatureName = 'json snapshot failure message contains path-based differences'
+    writeSnapshot('''
+      {
+        "enabled": true,
+        "user": {
+          "name": "Alice",
+          "roles": ["ADMIN", "EDITOR"]
+        }
+      }
+      '''.stripIndent())
+
+    when:
+    Snappo.assertSnapshot([
+      enabled: false,
+      user   : [
+        id   : 'user-1',
+        name : 'Bob',
+        roles: ['ADMIN', 'VIEWER']
+      ]
+    ], Comparisons.JSON)
+
+    then:
+    def error = thrown(AssertionFailedError)
+    error.message.contains('Differences')
+    error.message.contains('$.enabled expected true, but was false')
+    error.message.contains("\$.user.id unexpected in actual (actual 'user-1')")
+    error.message.contains("\$.user.name expected 'Alice', but was 'Bob'")
+    error.message.contains("\$.user.roles[1] expected 'EDITOR', but was 'VIEWER'")
   }
 
   def 'json snapshot ignores excluded types'() {

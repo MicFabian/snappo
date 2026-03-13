@@ -82,7 +82,12 @@ class Snappo {
     }
 
     if (expected != current) {
-      throw new AssertionFailedError("Snapshot mismatch for ${resource}", expected?.toString(), current?.toString())
+      String diff = SnapshotDiff.describe(expected, current)
+      String message = "Snapshot mismatch for ${resource}"
+      if (diff) {
+        message = "${message}${System.lineSeparator()}${diff}"
+      }
+      throw new AssertionFailedError(message, expected?.toString(), current?.toString())
     }
   }
 
