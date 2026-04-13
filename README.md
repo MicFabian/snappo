@@ -111,6 +111,7 @@ Snappo.expect(anyValue)
 Detection behavior:
 - JSON string -> JSON comparison
 - XML string -> XML comparison
+- multi-line CSV string -> CSV comparison
 - `byte[]` with PNG signature -> PNG comparison
 - collection/array -> array comparison
 - other `byte[]` -> binary comparison
@@ -121,6 +122,7 @@ Detection behavior:
 - `Comparisons.JSON`
 - `Comparisons.OBJECT_AS_JSON`
 - `Comparisons.API_RESPONSE` (ignores `id`, `createdAt`, `lastModified`)
+- `Comparisons.CSV`
 - `Comparisons.XML`
 - `Comparisons.TXT`
 - `Comparisons.PNG`
@@ -154,6 +156,16 @@ Snappo.expect(imageBytes, Comparisons.png(PngComparison.MODE.PIXEL))
 import io.github.micfabian.snappo.comparison.ArrayComparison
 
 Snappo.expect(values, new ArrayComparison(rounding: 2))
+```
+
+### CSV snapshots
+
+```groovy
+import io.github.micfabian.snappo.comparison.CsvComparison
+
+Snappo.expect(csvText, Comparisons.CSV)
+
+Snappo.expect(csvText, new CsvComparison())
 ```
 
 ### Custom comparison classes

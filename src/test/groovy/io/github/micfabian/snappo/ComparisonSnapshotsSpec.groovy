@@ -2,6 +2,7 @@ package io.github.micfabian.snappo
 
 import io.github.micfabian.snappo.comparison.ArrayComparison
 import io.github.micfabian.snappo.comparison.BinaryComparison
+import io.github.micfabian.snappo.comparison.CsvComparison
 import io.github.micfabian.snappo.comparison.HtmlComparison
 import io.github.micfabian.snappo.comparison.JsonComparison
 import io.github.micfabian.snappo.comparison.PngComparison
@@ -131,6 +132,32 @@ class ComparisonSnapshotsSpec extends Specification {
     def error = thrown(AssertionFailedError)
     error.message.contains('Differences')
     error.message.contains("\$ line 2 expected '3,4', but was '9,4'")
+  }
+
+  def 'csv comparison matches snapshot'() {
+    given:
+    def comparison = new CsvComparison()
+    writeSnapshot('csv comparison matches snapshot', comparison, "name,age\nAlice,42")
+
+    when:
+    Snappo.assertSnapshot("name,age\r\nAlice,42", comparison)
+
+    then:
+    noExceptionThrown()
+  }
+
+  def 'csv comparison mismatch message shows changed cell value'() {
+    given:
+    def comparison = new CsvComparison()
+    writeSnapshot('csv comparison mismatch message shows changed cell value', comparison, "name,age\nAlice,42")
+
+    when:
+    Snappo.assertSnapshot("name,age\nAlice,41", comparison)
+
+    then:
+    def error = thrown(AssertionFailedError)
+    error.message.contains('Differences')
+    error.message.contains("\$[1][1] expected '42', but was '41'")
   }
 
   def 'binary comparison matches snapshot'() {

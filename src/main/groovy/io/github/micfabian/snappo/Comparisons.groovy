@@ -1,6 +1,7 @@
 package io.github.micfabian.snappo
 
 import io.github.micfabian.snappo.comparison.BinaryComparison
+import io.github.micfabian.snappo.comparison.CsvComparison
 import io.github.micfabian.snappo.comparison.JsonComparison
 import io.github.micfabian.snappo.comparison.PngComparison
 import io.github.micfabian.snappo.comparison.TextComparison
@@ -14,6 +15,7 @@ class Comparisons {
   static final Comparison JSON = new JsonComparison()
   static final Comparison API_RESPONSE = new JsonComparison(excludedProperties: ['id', 'createdAt', 'lastModified'] as String[])
   static final Comparison BINARY = new BinaryComparison('bin')
+  static final Comparison CSV = new CsvComparison()
   static final Comparison XML = new XmlComparison()
   static final Comparison TXT = new TextComparison()
 

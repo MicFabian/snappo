@@ -2,6 +2,7 @@ package io.github.micfabian.snappo
 
 import io.github.micfabian.snappo.comparison.ArrayComparison
 import io.github.micfabian.snappo.comparison.BinaryComparison
+import io.github.micfabian.snappo.comparison.CsvComparison
 import io.github.micfabian.snappo.comparison.JsonComparison
 import io.github.micfabian.snappo.comparison.PngComparison
 import io.github.micfabian.snappo.comparison.TextComparison
@@ -19,6 +20,7 @@ class ComparisonDetector {
     new CanCompareArray(),
     new CanCompareJson(),
     new CanCompareXml(this),
+    new CanCompareCsv(),
     new CanCompareText(this)
   ]
 
@@ -115,6 +117,34 @@ class ComparisonDetector {
       } catch (SAXException ignored) {
         return false
       }
+    }
+  }
+
+  static class CanCompareCsv implements CanCompare {
+    private final CsvComparison comparison = new CsvComparison()
+
+    @Override
+    Comparison detect(Object input) {
+      if (!(input instanceof String)) {
+        return null
+      }
+
+      String text = input as String
+      try {
+        List<List<String>> rows = comparison.beforeComparison(text) as List<List<String>>
+        if (rows.isEmpty()) {
+          return null
+        }
+
+        boolean multipleColumns = rows.any { List<String> row -> row.size() > 1 }
+        boolean multipleRows = rows.size() > 1
+        if (multipleColumns && (multipleRows || text.contains('\n') || text.contains('\r'))) {
+          return new CsvComparison()
+        }
+      } catch (RuntimeException ignored) {
+        return null
+      }
+      null
     }
   }
 

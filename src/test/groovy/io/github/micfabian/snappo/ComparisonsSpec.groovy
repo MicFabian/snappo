@@ -1,5 +1,6 @@
 package io.github.micfabian.snappo
 
+import io.github.micfabian.snappo.comparison.CsvComparison
 import io.github.micfabian.snappo.comparison.JsonComparison
 import spock.lang.Specification
 
@@ -23,5 +24,10 @@ class ComparisonsSpec extends Specification {
   def 'api response comparison excludes expected fields'() {
     expect:
     (Comparisons.API_RESPONSE as JsonComparison).excludedProperties.toList() == ['id', 'createdAt', 'lastModified']
+  }
+
+  def 'csv comparison is exposed as a built-in'() {
+    expect:
+    Comparisons.CSV instanceof CsvComparison
   }
 }

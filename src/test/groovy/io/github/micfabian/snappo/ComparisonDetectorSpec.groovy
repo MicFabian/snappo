@@ -2,6 +2,7 @@ package io.github.micfabian.snappo
 
 import io.github.micfabian.snappo.comparison.ArrayComparison
 import io.github.micfabian.snappo.comparison.BinaryComparison
+import io.github.micfabian.snappo.comparison.CsvComparison
 import io.github.micfabian.snappo.comparison.JsonComparison
 import io.github.micfabian.snappo.comparison.PngComparison
 import io.github.micfabian.snappo.comparison.TextComparison
@@ -9,13 +10,14 @@ import io.github.micfabian.snappo.comparison.XmlComparison
 import spock.lang.Specification
 
 class ComparisonDetectorSpec extends Specification {
-  def 'detects json xml and text'() {
+  def 'detects json xml csv and text'() {
     given:
     def detector = new ComparisonDetector()
 
     expect:
     detector.detect('{"a":1}') instanceof JsonComparison
     detector.detect('<root><a>1</a></root>') instanceof XmlComparison
+    detector.detect("name,age\nAlice,42") instanceof CsvComparison
     detector.detect('plain text') instanceof TextComparison
   }
 
